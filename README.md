@@ -1,0 +1,2 @@
+# Complex-mathematical-expressions
+复杂数学表达式的求值及其利用该方法用Qt写的一个简单计算器
