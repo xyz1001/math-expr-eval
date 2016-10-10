@@ -1,5 +1,3 @@
-#encoding="GBK"
-#pragma once
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
@@ -8,85 +6,69 @@
 #include <stack>
 #include <map>
 #include "MathEx.h"
+#include "metacharacter.h"
 
 using namespace std;
 
-struct metacharacter {
-	//0ÎªÊı×Ö£¨°üÀ¨Ğ¡Êıµã£©£¬1ÎªÔËËã·û£¬2ÎªÀ¨ºÅ
-	int type;
-	//Õ»ÍâÓÅÏÈ¼¶£¬Êı×ÖÎª0
-	int out_priority;
-	//Õ»ÄÚÓÅÏÈ¼¶£¬Êı×ÖÎª0
-	int in_priority;
-	//²Ù×÷Êı¸öÊı£¬Êı×ÖºÍÀ¨ºÅÎª0
-	int operand;
-	/*ÔËËã·ûÎ»ÖÃ£¬Êı×ÖºÍÀ¨ºÅÎª0
-	 *ÔËËã·ûÔÚ²Ù×÷ÊıÖ®Ç°£¬Ö®¼äºÍÖ®ºó·Ö±ğÎª1,2ºÍ3±íÊ¾
-	 */
-	int position;
-	//ÔËËã·ûÔªËØ
-	string e;
-};
-
-//Òì³£ÃüÃû¿Õ¼ä
+//å¼‚å¸¸å‘½åç©ºé—´
 namespace ExpressionError
 {
-	//·Ç·¨×Ö·û
-	const string ILLEGAL_CHARACTER_ERROR = "Illegal character: ";
-	//À¨ºÅ²»Æ¥Åä
-	const string ILLEGAL_BRACKET_ERROR = "Unmatched bracket";
-	//¶àÓàÀ¨ºÅ
-	const string NEEDLESS_BARCKET_ERROR = "Needless bracket";
-	//È±Ê§²Ù×÷Êı
-	const string MISSING_OPERAND_ERROR = "Missing operand";
-	//Î´ÖªÒì³£
-	const string UNKNOWN_ERROR = "Unknown error";
+	//éæ³•å­—ç¬¦
+    const string ILLEGAL_CHARACTER_ERROR = "éæ³•å­—ç¬¦: ";
+	//æ‹¬å·ä¸åŒ¹é…
+    const string ILLEGAL_BRACKET_ERROR = "æ‹¬å·ä¸åŒ¹é…";
+	//ç¼ºå¤±æ“ä½œæ•°
+    const string MISSING_OPERAND_ERROR = "ç¼ºå°‘æ“ä½œæ•°";
+    //å¤šä½™çš„æ“ä½œæ•°
+    const string MISSING_OPERATOR_ERROR = "ç¼ºå°‘è¿ç®—ç¬¦";
+	//æœªçŸ¥å¼‚å¸¸
+    const string UNKNOWN_ERROR = "æœªçŸ¥é”™è¯¯";
 }
 
 class Expression
 {
 private:
-	//±í´ïÊ½ÔªËØĞÅÏ¢
-	const static map<string,metacharacter> METACHARACTER;
-	//ÊıÑ§¼ÆËã
+	//æ•°å­¦è®¡ç®—
 	MathEx mathEx;
-	//Ô­Ê¼×Ö·û´®
+	//åŸå§‹å­—ç¬¦ä¸²
 	string raw_exp;
-	//²ğ·ÖºóµÄ±í´ïÊ½ÔªËØÁĞ±í
-	list<metacharacter> exp;
-	//²Ù×÷·ûÕ»
-	stack<metacharacter> op;
-	//Êı×ÖÕ»
+	//æ‹†åˆ†åçš„è¡¨è¾¾å¼å…ƒç´ åˆ—è¡¨
+    list<Metacharacter> exp;
+	//æ“ä½œç¬¦æ ˆ
+    stack<Metacharacter> op;
+	//æ•°å­—æ ˆ
 	stack<double> number;
-	//±í´ïÊ½µÄÖµ
+	//è¡¨è¾¾å¼çš„å€¼
 	double result = 0;
 
-	//¶Ô±í´ïÊ½½øĞĞ×Ö·ûºÏ·¨ĞÔµÄ³õ²½¼ì²â
+	//å¯¹è¡¨è¾¾å¼è¿›è¡Œå­—ç¬¦åˆæ³•æ€§çš„åˆæ­¥æ£€æµ‹
 	bool simpleCheck();
-	//²ğ·Ö±í´ïÊ½
+	//æ‹†åˆ†è¡¨è¾¾å¼
 	bool split();
-	//¸ººÅ¼ì²â¼°´¦Àí
+	//è´Ÿå·æ£€æµ‹åŠå¤„ç†
 	void negativeOperatorPreprocessing();
-	//¿ª·½¸ººÅ¼ì²â¼°´¦Àí
+	//å¼€æ–¹è´Ÿå·æ£€æµ‹åŠå¤„ç†
 	void sqrtOperatorPreprocessing();
-	//°Ù·ÖºÅ/ÇóÓà·ûºÅ¼ì²â¼°´¦Àí
+	//ç™¾åˆ†å·/æ±‚ä½™ç¬¦å·æ£€æµ‹åŠå¤„ç†
 	void percentOperatorPreprocessing();
-	//²»Í¬À¨ºÅ¼ì²â¼°´¦Àí
+    //åº¦ç¬¦å·æ£€æµ‹åŠå¤„ç†
+    void degreeOperatorPreprocessing();
+	//ä¸åŒæ‹¬å·æ£€æµ‹åŠå¤„ç†
 	void bracketPreprocessing();
-	//ÌØÊâÔËËã·û¼ì²â¼°´¦Àí
+	//ç‰¹æ®Šè¿ç®—ç¬¦æ£€æµ‹åŠå¤„ç†
 	void preprocessing();
-	//³öÕ»ÔËËã·ûÔËËã
+	//å‡ºæ ˆè¿ç®—ç¬¦è¿ç®—
 	void operation();
-	//×ª»»³Éºó×º±í´ïÊ½£¬±ß×ª»»±ßÇóÖµ
+	//è½¬æ¢æˆåç¼€è¡¨è¾¾å¼ï¼Œè¾¹è½¬æ¢è¾¹æ±‚å€¼
 	void transToPostfix();
-	//µ¥Ä¿ÔËËã·ûÔËËã
-	void calc(metacharacter mc, double &op1);
-	//Ë«Ä¿ÔËËã·ûÔËËã
-	void calc(metacharacter mc, double &op1, double &op2);
+	//å•ç›®è¿ç®—ç¬¦è¿ç®—
+    void calc(Metacharacter mc, double &op1);
+	//åŒç›®è¿ç®—ç¬¦è¿ç®—
+    void calc(Metacharacter mc, double &op1, double &op2);
 public:
-	Expression(string str);
+    Expression(string str, int precision = 3);
 	~Expression();
-	//»ñÈ¡¼ÆËã½á¹û
+	//è·å–è®¡ç®—ç»“æœ
 	string getResult();
 };
 

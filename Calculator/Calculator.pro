@@ -15,10 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     Expression.cpp \
-    MathEx.cpp
+    MathEx.cpp \
+    pushbutton.cpp
 
 HEADERS  += mainwindow.h \
     Expression.h \
-    MathEx.h
+    MathEx.h \
+    metacharacter.h \
+    pushbutton.h
 
 CONFIG += c++11

@@ -1,5 +1,3 @@
-#encoding="GBK"
-#pragma once
 #ifndef MATHEX_H
 #define MATHEX_H
 
@@ -9,28 +7,28 @@ using namespace std;
 
 namespace MathExError
 {
-	//³ıÊıÎª0
-	const string DIVISOR_ERROR = "Divisor cannot be zero.";
-	//¸ùÖ¸ÊıÎª0
-	const string RADICAL_EXPONENT_ERROR = "Radical exponent cannot be zero";
-	//¸ùÖ¸ÊıºÍ±»¿ª·½Êı³åÍ»
-	const string EXTRACT_ROOT_ERROR = "Radicand and radical exponent are conflicting.";
-	//Ä£ÔËËãÁ½Êı²»È«ÎªÕûÊı
-	const string MOD_ERROR = "Both dividend and modulus need be a integer.";
-	//Ä£ÊıÎª0
-	const string MODULUS_ERROR = "Modulus cannot be zero";
-	//0µÄÃİÖ¸ÊıÎª·ÇÕıÊı
-	const string POW_ERROR = "The exponent connot be a non-zero negative number when the base is zero";
-	//·Ç×ÔÈ»ÊıµÄ½×³Ë
-	const string FACTORIAL_ERROR = "Factorial is defined for natural numbers.";
-	//ÕıÇĞº¯ÊıµÄ×Ô±äÁ¿È¡Öµ´íÎó
-	const string TAN_ERROR = "Tangent error";
-	//·´ÕıÏÒ£¬ÓàÏÒº¯Êı×Ô±äÁ¿È¡Öµ·¶Î§[-1,1]
-	const string ARCSIN_ARCCOS_ERROR = "The absolute value of x of arcsin x or arccos x cannot be great than 1";
-	//¶ÔÊıµÄÕæÊıÎª·ÇÕıÊı
-	const string ANTILOGARITHM_ERROR = "The antilogarithm cannot be  zero or a negative";
-	//Î´ÖªÒì³£
-	const string UNKNOWN_ERROR = "unknown error";
+	//é™¤æ•°ä¸º0
+    const string DIVISOR_ERROR = "é™¤æ•°ä¸èƒ½ä¸º0";
+    //è¢«å¼€æ–¹æ•°ä¸èƒ½å°äº0
+    const string RADICAND_ERROR = "è¢«å¼€æ–¹æ•°ä¸èƒ½å°äº0";
+    //è´Ÿæ•°ä¸å­˜åœ¨å¹³æ–¹æ ¹
+    const string EXTRACT_ROOT_ERROR = "è´Ÿæ•°ä¸å­˜åœ¨å¹³æ–¹æ ¹";
+	//æ¨¡è¿ç®—ä¸¤æ•°ä¸å…¨ä¸ºæ•´æ•°
+    const string MOD_ERROR = "æ¨¡è¿ç®—ä¸¤æ“ä½œæ•°éœ€å‡ä¸ºæ•´æ•°";
+	//æ¨¡æ•°ä¸º0
+    const string MODULUS_ERROR = "æ¨¡æ•°ä¸èƒ½ä¸º0";
+	//0çš„å¹‚æŒ‡æ•°ä¸ºéæ­£æ•°
+    const string POW_ERROR = "0çš„å¹‚æŒ‡æ•°ä¸èƒ½ä¸ºéæ­£æ•°";
+	//éè‡ªç„¶æ•°çš„é˜¶ä¹˜
+    const string FACTORIAL_ERROR = "é˜¶ä¹˜æ•°éœ€ä¸ºè‡ªç„¶æ•°";
+	//æ­£åˆ‡å‡½æ•°çš„è‡ªå˜é‡å–å€¼é”™è¯¯
+    const string TAN_ERROR = "æ­£åˆ‡å‡½æ•°è‡ªå˜é‡å–å€¼ä¸èƒ½ä¸ºkÏ€+Ï€/2";
+	//åæ­£å¼¦ï¼Œä½™å¼¦å‡½æ•°è‡ªå˜é‡å–å€¼èŒƒå›´[-1,1]
+    const string ARCSIN_ARCCOS_ERROR = "åæ­£å¼¦å’Œåä½™å¼¦å‡½æ•°è‡ªå˜é‡ç»å¯¹å€¼ä¸èƒ½å¤§äº1";
+	//å¯¹æ•°çš„çœŸæ•°ä¸ºéæ­£æ•°
+    const string ANTILOGARITHM_ERROR = "å¯¹æ•°çš„çœŸæ•°ä¸èƒ½ä¸ºéæ­£æ•°";
+	//æœªçŸ¥å¼‚å¸¸
+    const string UNKNOWN_ERROR = "æœªçŸ¥å¼‚å¸¸";
 }
 
 const double PI = 3.14159265358979323846;
@@ -38,44 +36,47 @@ const double PI = 3.14159265358979323846;
 class MathEx
 {
 private:
-	double EPS = 1e-15;
+    double EPS = 1e-4;  //å°æ•°ç²¾åº¦
 public:
 	MathEx();
 	~MathEx();
 
-	void set_eps(double e);
+    void set_eps(int e);    //è®¾ç½®ç²¾åº¦,eä¸ºå°æ•°ç‚¹ä½æ•°
+    double getRound(double d) const;    //æ ¹æ®ç²¾åº¦å››èˆäº”å…¥
 
-	//¼Ó·¨ÔËËã
+	//åŠ æ³•è¿ç®—
 	double op_add(const double &op1, const double &op2) const;
-	//¼õ·¨ÔËËã
+	//å‡æ³•è¿ç®—
 	double op_subtract(const double &op1, const double &op2) const;
-	//³Ë·¨ÔËËã
+	//ä¹˜æ³•è¿ç®—
 	double op_multiply(const double &op1, const double &op2) const;
-	//³ı·¨ÔËËã
+	//é™¤æ³•è¿ç®—
 	double op_divide(const double &op1, const double &op2) const;
-	//Ä£ÔËËã
+	//æ¨¡è¿ç®—
 	double op_mod(const double &op1, const double &op2) const;
-	//³Ë·½ÔËËã
+	//ä¹˜æ–¹è¿ç®—
 	double op_pow(const double &op1, const double &op2) const;
-	//¿ª·½ÔËËã
+	//å¼€æ–¹è¿ç®—
 	double op_extract_root(const double &op1, const double &op2) const;
-	//½×³ËÔËËã
+	//é˜¶ä¹˜è¿ç®—
 	double op_factorial(const double &op) const;
-	//ÕıÏÒÔËËã£¬opÎª»¡¶È
+    //è§’åº¦è½¬å¼§åº¦
+    double op_degree_to_radian(const double &op) const;
+	//æ­£å¼¦è¿ç®—ï¼Œopä¸ºå¼§åº¦
 	double op_sin(const double &op) const;
-	//ÓàÏÒÔËËã£¬opÎª»¡¶È
+	//ä½™å¼¦è¿ç®—ï¼Œopä¸ºå¼§åº¦
 	double op_cos(const double &op) const;
-	//ÕıÇĞÔËËã£¬opÎª»¡¶È
+	//æ­£åˆ‡è¿ç®—ï¼Œopä¸ºå¼§åº¦
 	double op_tan(const double &op) const;
-	//·´ÕıÏÒÔËËã£¬·µ»ØÖµÎª»¡¶È
+	//åæ­£å¼¦è¿ç®—ï¼Œè¿”å›å€¼ä¸ºå¼§åº¦
 	double op_arcsin(const double &op) const;
-	//·´ÓàÏÒÔËËã£¬·µ»ØÖµÎª»¡¶È
+	//åä½™å¼¦è¿ç®—ï¼Œè¿”å›å€¼ä¸ºå¼§åº¦
 	double op_arccos(const double &op) const;
-	//·´ÕıÇĞÔËËã£¬·µ»ØÖµÎª»¡¶È
+	//åæ­£åˆ‡è¿ç®—ï¼Œè¿”å›å€¼ä¸ºå¼§åº¦
 	double op_arctan(const double &op) const;
-	//³£ÓÃ¶ÔÊı£¬µ×ÊıÎª10
+	//å¸¸ç”¨å¯¹æ•°ï¼Œåº•æ•°ä¸º10
 	double op_lg(const double &op) const;
-	//×ÔÈ»¶ÔÊı£¬µ×ÊıÎªe
+	//è‡ªç„¶å¯¹æ•°ï¼Œåº•æ•°ä¸ºe
 	double op_ln(const double &op) const;
 };
 

@@ -1,4 +1,3 @@
-#encoding="GBK"
 #include "Expression.h"
 #include <exception>
 #include <regex>
@@ -7,94 +6,69 @@
 #include <iostream>
 using namespace std;
 
-const map<string, metacharacter> Expression::METACHARACTER{
-	{ "0",		metacharacter{ 0,0,0,0,0, "0" }},
-	{ "1",		metacharacter{ 0,0,0,0,0, "1" }},
-	{ "2",		metacharacter{ 0,0,0,0,0, "2" }},
-	{ "3",		metacharacter{ 0,0,0,0,0, "3" }},
-	{ "4",		metacharacter{ 0,0,0,0,0, "4" }},
-	{ "5",		metacharacter{ 0,0,0,0,0, "5" }},
-	{ "6",		metacharacter{ 0,0,0,0,0, "6" }},
-	{ "7",		metacharacter{ 0,0,0,0,0, "7" }},
-	{ "8",		metacharacter{ 0,0,0,0,0, "8" }},
-	{ "9",		metacharacter{ 0,0,0,0,0, "9" }},
-	{ ".",		metacharacter{ 0,0,0,0,0, "." }},
 
-	{ "+",		metacharacter{ 1,1,1,2,2, "+" }},
-	{ "-",		metacharacter{ 1,1,1,2,2, "-" }},
-	{ "*",		metacharacter{ 1,2,2,2,2, "*" }},
-	{ "/",		metacharacter{ 1,2,2,2,2, "/" }},
-	{ "%",		metacharacter{ 1,2,2,2,2, "%" }},
-	{ "^",		metacharacter{ 1,3,3,2,2, "^" }},
-	{ "#",		metacharacter{ 1,3,3,2,2, "#" }},
-	{ "!",		metacharacter{ 1,4,4,1,3, "!" }},
 
-	{ "sin",	metacharacter{ 1,11,11,1,1, "sin" }},
-	{ "cos",	metacharacter{ 1,11,11,1,1, "cos" }},
-	{ "tan",	metacharacter{ 1,11,11,1,1, "tan" }},
-	{ "arcsin",	metacharacter{ 1,11,11,1,1, "arcsin" }},
-	{ "arccos",	metacharacter{ 1,11,11,1,1, "arccos" }},
-	{ "arctan",	metacharacter{ 1,11,11,1,1, "arctan" }},
-	{ "lg",		metacharacter{ 1,11,11,1,1, "lg" }},
-	{ "log",	metacharacter{ 1,11,11,1,1, "log" }},
-	{ "ln",		metacharacter{ 1,11,11,1,1, "ln" }},
-
-	{ "(",		metacharacter{ 2,103,-1,0,0, "(" }},
-	{ "[",		metacharacter{ 2,102,-1,0,0, "[" }},
-	{ "{",		metacharacter{ 2,101,-1,0,0, "{" }},
-	{ ")",		metacharacter{ 2,-1,103,0,0, ")" }},
-	{ "]",		metacharacter{ 2,-1,102,0,0, "]" }},
-	{ "}",		metacharacter{ 2,-1,101,0,0, "}" }},
-
-	{ "$",		metacharacter{ 3,-10,-10,0,0, "$" }},
-};
-
-Expression::Expression(string str)
+Expression::Expression(string str, int precision)
 {
 	raw_exp = str;
+    mathEx.set_eps(precision);
 }
 
 Expression::~Expression()
 {
 }
 
+/*
+ * å¯¹è¡¨è¾¾å¼è¿›è¡Œåˆæ­¥åˆæ³•æ€§æ£€æŸ¥ï¼ŒåŒ…æ‹¬å­—ç¬¦ä»¥åŠå­—ç¬¦ç»„æˆçš„è¿ç®—å•å…ƒæ˜¯å¦åˆæ³•
+ */
 bool Expression::simpleCheck()
 {
 	string temp;
-	bool getWord = false;
-	int isAlpha = 0;
+    bool getWord = false;   //è·å–æ“ä½œç¬¦ä¸­
+    int isAlpha = 0;    //å½“å‰å­—ç¬¦æ˜¯å¦ä¸ºå­—æ¯
 	for (auto &i : raw_exp)
 	{
-		isAlpha = isalpha(i);
-		if (getWord)
+        isAlpha = isalpha(i);   //åˆ¤æ–­å½“å‰å­—ç¬¦æ˜¯å¦ä¸ºå­—æ¯
+        if (getWord)
 		{
+            /*
+             * å¤„äºæ“ä½œè¯æ„æˆè¿‡ç¨‹ä¸­ï¼Œç»§ç»­æ·»åŠ å­—æ¯
+             */
 			if (isAlpha)
 			{
 				temp += i;
-				continue;
+                continue;   //è·³è¿‡åç»­
 			}
 		}
 		else
 		{
+            /*
+             * è¯»å–åˆ°ä¸€ä¸ªå­—æ¯ï¼Œå¼€å¯æ“ä½œè¯æ„æˆè¿‡ç¨‹
+             */
 			if (isAlpha)
 			{
 				getWord = true;
 				temp += i;
-				continue;
+                continue;   //è·³è¿‡åç»­
 			}
 			else
-				temp += i;
-		}
-		if (getWord)
-		{
-			if (METACHARACTER.find(temp) == METACHARACTER.end() || temp == "$")
-				throw runtime_error(ExpressionError::ILLEGAL_CHARACTER_ERROR + temp);
-			getWord = false;
+                temp += i;  //è¯»å–åˆ°éå­—æ¯ï¼Œæ“ä½œè¯æ„æˆè¿‡ç¨‹ç»“æŸ
 		}
 
-		if (METACHARACTER.find(temp) == METACHARACTER.end() || temp == "$")
-			throw runtime_error(ExpressionError::ILLEGAL_CHARACTER_ERROR + temp);
-		temp = "";
+        /*
+         * å¦‚æœè¯»å–åˆ°çš„æ“ä½œè¯ä¸åœ¨å…ƒå­—ç¬¦è¡¨ä¸­æˆ–ä¸ºç»“æŸç¬¦ï¼ŒæŠ›å‡ºå¼‚å¸¸
+         */
+        if (METACHARACTERS.find(temp) == METACHARACTERS.end() || temp == "$")
+            throw runtime_error(ExpressionError::ILLEGAL_CHARACTER_ERROR + temp);
+
+        /*
+         * é‡ç½®æ“ä½œè¯æ„æˆè¿‡ç¨‹æ ‡è¯†
+         */
+		if (getWord)
+		{
+			getWord = false;
+		}
+        temp = "";  //æ¸…ç©º
 	}
 
 	if (getWord)
@@ -102,6 +76,9 @@ bool Expression::simpleCheck()
 	return true;
 }
 
+/*
+ * è¯æ³•åˆ†æï¼Œæ„å­—æˆè¯
+ */
 bool Expression::split()
 {
 	string::size_type i = 0;
@@ -110,24 +87,27 @@ bool Expression::split()
 	{
 		string str_temp;
 		str_temp += raw_exp[i];
-		if (isdigit(raw_exp[i]))
+        bool getPoint = false;
+        if (isdigit(raw_exp[i]))    //è¯»å–æ•°å­—
 		{
 			temp = i;
 			do
 			{
+                if(raw_exp[i] == '.')
+                    getPoint = true;
 				if (++i >= raw_exp.size())
 					break;
-			} while (isdigit(raw_exp[i]) || raw_exp[i] == '.');
-			exp.push_back(metacharacter{ 0,0,0,0,0, raw_exp.substr(temp, i - temp) });
+            } while (isdigit(raw_exp[i]) || ((!getPoint) && raw_exp[i] == '.'));
+            exp.push_back(Metacharacter{ 0,0,0,0,0, raw_exp.substr(temp, i - temp) });
 		}
-		else if (raw_exp[i] == '.')
+        else if (raw_exp[i] == '.') //è¯»å–åˆ°ä¸åœ¨æ•°å­—ä¹‹åçš„å°æ•°ç‚¹ï¼ŒæŠ›å‡ºå¼‚å¸¸
 			throw runtime_error(ExpressionError::ILLEGAL_CHARACTER_ERROR + ".");
-		else if (METACHARACTER.find(str_temp)!=METACHARACTER.end())
+        else if (METACHARACTERS.find(str_temp)!=METACHARACTERS.end()) //è¯»å–åˆ°æ“ä½œç¬¦
 		{
-			exp.push_back(METACHARACTER.at(str_temp));
+            exp.push_back(METACHARACTERS.at(str_temp));
 			++i;
 		}
-		else if (isalpha(raw_exp[i]))
+        else if (isalpha(raw_exp[i]))   //è¯»å–åˆ°æ“ä½œè¯
 		{
 			temp = i;
 			do
@@ -136,29 +116,34 @@ bool Expression::split()
 					break;
 			} while (isalpha(raw_exp[i]));
 			str_temp = raw_exp.substr(temp, i - temp);
-			exp.push_back(METACHARACTER.at(str_temp));
+            exp.push_back(METACHARACTERS.at(str_temp));
 		}
 	}
 	return true;
 }
 
+/*
+ * è´Ÿå·å¤„ç†
+ */
 void Expression::negativeOperatorPreprocessing()
 {
-	for (list<metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
+    for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
 	{
 		if ((*i).e == "-")
 		{
+            //å¦‚æœè´Ÿå·åœ¨è¡¨è¾¾å¼é¦–ä½ï¼Œåœ¨è´Ÿå·å‰æ·»åŠ æ•°å­—0
 			if (i == exp.begin())
 			{
-				i = exp.insert(i, METACHARACTER.at("0"));
+                i = exp.insert(i, METACHARACTERS.at("0"));
 			}
 			else
 			{
+                //å¦‚æœè´Ÿå·å‰ä¸ºæ‹¬å·ï¼Œåœ¨è´Ÿå·å‰æ·»åŠ æ•°å­—0
 				--i;
 				if ((*i).out_priority >= 100)
 				{
 					++i;
-					i = exp.insert(i, METACHARACTER.at("0"));
+                    i = exp.insert(i, METACHARACTERS.at("0"));
 				}
 				++i;
 			}
@@ -166,42 +151,42 @@ void Expression::negativeOperatorPreprocessing()
 	}
 }
 
-//ÎªÄ¬ÈÏÊ¡ÂÔ¸ùÖ¸Êı2µÄ¿ªÆ½·½ÔËËã·ûÇ°Ìí¼ÓÉÏ¸ùÖ¸Êı2
+//ä¸ºé»˜è®¤çœç•¥æ ¹æŒ‡æ•°2çš„å¼€å¹³æ–¹è¿ç®—ç¬¦å‰æ·»åŠ ä¸Šæ ¹æŒ‡æ•°2
 void Expression::sqrtOperatorPreprocessing()
 {
-	for (list<metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
+    for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
 	{
 		if ((*i).e == "#")
 		{
-			//Èç¹û¸ùºÅÔÚ±í´ïÊ½µÚÒ»¸öÎ»ÖÃ
+			//å¦‚æœæ ¹å·åœ¨è¡¨è¾¾å¼ç¬¬ä¸€ä¸ªä½ç½®
 			if (i == exp.begin())
 			{
-				i = exp.insert(i, METACHARACTER.at("2"));
+                i = exp.insert(i, METACHARACTERS.at("2"));
 			}
 			else
 			{
 				--i;
-				//Èç¹û¸ùºÅÇ°Îª×óÀ¨ºÅ£¬Ö±½ÓÌí¼Ó¸ùÖ¸Êı2
+				//å¦‚æœæ ¹å·å‰ä¸ºå·¦æ‹¬å·ï¼Œç›´æ¥æ·»åŠ æ ¹æŒ‡æ•°2
 				if ((*i).out_priority >= 100)
 				{
 					++i;
-					i = exp.insert(i, METACHARACTER.at("2"));
+                    i = exp.insert(i, METACHARACTERS.at("2"));
 					++i;
 				}
-				//Èç¹û¸ùºÅÇ°ÎªÎªÇ°ÖÃÔËËã·û»òÖĞÖÃÔËËã·û£¬ËµÃ÷¸ùºÅÎª¿ªÆ½·½ÔËËã£¬ÎªÆäÌí¼Ó¸ùÖ¸Êı2²¢Ìí¼ÓÀ¨ºÅ
+				//å¦‚æœæ ¹å·å‰ä¸ºä¸ºå‰ç½®è¿ç®—ç¬¦æˆ–ä¸­ç½®è¿ç®—ç¬¦ï¼Œè¯´æ˜æ ¹å·ä¸ºå¼€å¹³æ–¹è¿ç®—ï¼Œä¸ºå…¶æ·»åŠ æ ¹æŒ‡æ•°2å¹¶æ·»åŠ æ‹¬å·
 				else if ((*i).position == 1 || (*i).position == 2)
 				{
-					//ÔÚ¸ùºÅÇ°Ìí¼Ó¡°£¨2¡±
+					//åœ¨æ ¹å·å‰æ·»åŠ â€œï¼ˆ2â€
 					++i;
-					i = exp.insert(i, { METACHARACTER.at("("),METACHARACTER.at("2") }); //(2#4
+                    i = exp.insert(i, { METACHARACTERS.at("("),METACHARACTERS.at("2") }); //(2#4
 					++i, ++i, ++i;
-					//Èç¹û¸ùºÅºóÎªÊı×Ö£¬Ö±½ÓÔÚÊı×ÖºóÌí¼Ó¡°)¡±
+					//å¦‚æœæ ¹å·åä¸ºæ•°å­—ï¼Œç›´æ¥åœ¨æ•°å­—åæ·»åŠ â€œ)â€
 					if ((*i).type == 0)
 					{
 						++i;
-						i = exp.insert(i, METACHARACTER.at(")"));
+                        i = exp.insert(i, METACHARACTERS.at(")"));
 					}
-					//Èç¹û¸ùºÅºóÎª×óÀ¨ºÅ£¬²éÕÒ¶ÔÓ¦µÄÓÒÀ¨ºÅ²¢ÔÚÆäºóÌí¼Ó¡°)¡±
+					//å¦‚æœæ ¹å·åä¸ºå·¦æ‹¬å·ï¼ŒæŸ¥æ‰¾å¯¹åº”çš„å³æ‹¬å·å¹¶åœ¨å…¶åæ·»åŠ â€œ)â€
 					else if ((*i).type == 2)
 					{
 						int bracketCnt = 1;
@@ -215,19 +200,19 @@ void Expression::sqrtOperatorPreprocessing()
 							if (bracketCnt == 0)
 							{
 								++j;
-								exp.insert(j, METACHARACTER.at(")"));
+                                exp.insert(j, METACHARACTERS.at(")"));
 								break;
 							}
 						}
 						--i;
-						//Èç¹û¸ùºÅºó×óÓÒÀ¨ºÅÊıÁ¿²»µÈ£¬Å×³öÀ¨ºÅÒì³£
+						//å¦‚æœæ ¹å·åå·¦å³æ‹¬å·æ•°é‡ä¸ç­‰ï¼ŒæŠ›å‡ºæ‹¬å·å¼‚å¸¸
 						if (bracketCnt != 0)
 							throw runtime_error(ExpressionError::ILLEGAL_BRACKET_ERROR);
 					}
-					//Èç¹û¸ùºÅºóÎªÔËËã·û»òÓÒÀ¨ºÅ£¬Å×³ö²Ù×÷ÊıÒì³£
+					//å¦‚æœæ ¹å·åä¸ºè¿ç®—ç¬¦æˆ–å³æ‹¬å·ï¼ŒæŠ›å‡ºæ“ä½œæ•°å¼‚å¸¸
 					else if ((*i).type == 1 || (*i).out_priority > 100)
 						throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
-					//ÆäËûÒì³£
+					//å…¶ä»–å¼‚å¸¸
 					else
 						throw runtime_error(ExpressionError::UNKNOWN_ERROR);
 				}
@@ -238,63 +223,110 @@ void Expression::sqrtOperatorPreprocessing()
 	}
 }
 
-//¸ù¾İÏÂÎÄ¶Ô%½øĞĞÅĞ¶Ï£¬Èç¹ûÏÂÎÄÎª±í´ïÊ½Î²»òÖĞÖÃºÍºóÖÃÔËËã·û£¬Ôò%Îª°Ù·ÖºÅ²Ù×÷£¬·ñÔòÎªÄ£²Ù×÷
+//æ ¹æ®ä¸‹æ–‡å¯¹%è¿›è¡Œåˆ¤æ–­ï¼Œå¦‚æœä¸‹æ–‡ä¸ºè¡¨è¾¾å¼å°¾æˆ–ä¸­ç½®å’Œåç½®è¿ç®—ç¬¦ï¼Œåˆ™%ä¸ºç™¾åˆ†å·æ“ä½œï¼Œå¦åˆ™ä¸ºæ¨¡æ“ä½œ
 void Expression::percentOperatorPreprocessing()
 {
-	for (list<metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
+    for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
 	{
 		if ((*i).e == "%")
 		{
 			++i;
+            //å¦‚æœ%åä¸ºè¡¨è¾¾å¼å°¾,ä¸­ç½®æˆ–åç½®è¿ç®—ç¬¦,åˆ™%ä¸ºç™¾åˆ†å·è¿ç®—,ä¸ºé¿å…äºŒä¹‰æ€§,å°†å…¶è½¬æ¢ä¸ºé™¤ä»¥100æ“ä½œå¹¶åŠ ä¸Šæ‹¬å·
 			if (i == exp.end() || (*i).position == 2 || (*i).position == 3)
 			{
-				i = exp.insert(i, metacharacter{ 0,0,0,0,0, "100" });
+                i = exp.insert(i, METACHARACTERS.at(")"));  //åŠ ä¸Šå³æ‹¬å·
+                i = exp.insert(i, Metacharacter{ 0,0,0,0,0, "100" });   //åŠ ä¸Šé™¤æ•°100
 				--i;
-				(*i).e = "/";
+                (*i).e = "/";   //ç”±äº%å’Œ/é™¤åç§°ä»¥å¤–å…¶ä½™å±æ€§ä¸€è‡´,ç›´æ¥å°†%ä¿®æ”¹ä¸º/
+                int interval = 0;   //è®°å½•å…ˆå‰ç§»åŠ¨é—´éš”
+                /*
+                 * æ‰¾åˆ°%å‰ç¬¬ä¸€ä¸ªä¸ºå‰ç½®,ä¸­ç½®è¿ç®—ç¬¦æˆ–è¡¨è¾¾å¼é¦–çš„ä½ç½®
+                 */
+                while((--i)->position != 1 && i->position !=2 && i != exp.begin())
+                {
+                    ++interval;
+                }
+                //åœ¨æ‰¾åˆ°çš„ä½ç½®ä¹‹åæ’å…¥å·¦æ‹¬å·
+                ++i;
+                i = exp.insert(i, METACHARACTERS.at("("));
+                while (interval--)  //è¿”å›åŸä½ç½®
+                {
+                    ++i;
+                }
+                ++i;
 			}
 		}
-	}
+    }
 }
 
-//½«´ó/ÖĞ²Ù×÷×ª»»Îª¶ÔÓ¦µÄĞ¡À¨ºÅ
+/**
+ * ä¸ºäº†ä¿è¯Â°çš„ä¼˜å…ˆè®¡ç®—,å¯¹å…¶åŠå‰é¢çš„æ•°å­—åŠ ä¸Šæ‹¬å·
+ */
+void Expression::degreeOperatorPreprocessing()
+{
+    //ä¸å¯¹ç™¾åˆ†å·å¤„ç†ç±»ä¼¼,åªæ˜¯æ— éœ€å¯¹åä¸€ä¸ªæ“ä½œè¯è¿›è¡Œåˆ¤æ–­,Â°æ— äºŒä¹‰æ€§,åªéœ€ç›´æ¥åŠ æ‹¬å·å³å¯
+    for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
+    {
+        if ((*i).e == "`")
+        {
+            ++i;
+            i = exp.insert(i, METACHARACTERS.at(")"));
+            int interval = 0;
+            while((--i)->position != 1 && i->position !=2 && i != exp.begin())
+            {
+                ++interval;
+            }
+            ++i;
+            i = exp.insert(i, METACHARACTERS.at("("));
+            while (interval--)
+            {
+                ++i;
+            }
+            ++i;
+        }
+    }
+}
+
+//å°†å¤§/ä¸­æ“ä½œè½¬æ¢ä¸ºå¯¹åº”çš„å°æ‹¬å·
 void Expression::bracketPreprocessing()
 {
-    for (list<metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
+    for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
 	{
-		//×ª»»×óÀ¨ºÅ
+		//è½¬æ¢å·¦æ‹¬å·
 		if ((*i).out_priority ==101 || (*i).out_priority == 102)
 		{
 			i = exp.erase(i);
-			i = exp.insert(i, METACHARACTER.at("("));
+            i = exp.insert(i, METACHARACTERS.at("("));
 		}
-		//×ª»»ÓÒÀ¨ºÅ
+		//è½¬æ¢å³æ‹¬å·
 		else if ((*i).in_priority == 101 || (*i).in_priority == 102)
 		{
 			i = exp.erase(i);
-			i = exp.insert(i, METACHARACTER.at(")"));
+            i = exp.insert(i, METACHARACTERS.at(")"));
 		}
 	}
 }
 
-//¶Ô·Ö¸îºóµÄ±í´ïÊ½½øĞĞÔ¤´¦Àí£¬±ãÓÚ½ÓÏÂÀ´µÄ²Ù×÷
+//å¯¹åˆ†å‰²åçš„è¡¨è¾¾å¼è¿›è¡Œé¢„å¤„ç†ï¼Œä¾¿äºæ¥ä¸‹æ¥çš„æ“ä½œ
 void Expression::preprocessing()
 {
 	negativeOperatorPreprocessing();
 	sqrtOperatorPreprocessing();
 	percentOperatorPreprocessing();
 	bracketPreprocessing();
+    degreeOperatorPreprocessing();
 }
 
 void Expression::operation()
 {
-	if (op.top().operand == 1)
+    if (op.top().operand == 1)  //è‹¥ä¸ºä¸€å…ƒè¿ç®—ç¬¦
 	{
 		double op1; if (op.empty())
 			throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
 		else
 			calc(op.top(), op1);
 	}
-	else
+    else    //è‹¥ä¸ºäºŒå…ƒè¿ç®—ç¬¦
 	{
 		double op1, op2;
 		if (op.empty())
@@ -309,21 +341,20 @@ void Expression::operation()
 void Expression::transToPostfix()
 {
 	try {
-		//metacharacter lastBracket;
-		exp.push_front(METACHARACTER.at("$"));
-		//exp.push_back(elementOfExpression{ "$",-2 });
+        exp.push_front(METACHARACTERS.at("$"));
 		for (auto i : exp)
 		{
-			//Èç¹ûµ±Ç°ÔªËØÎª²Ù×÷Êı£¬Ñ¹Èë²Ù×÷ÊıÕ»
+			//å¦‚æœå½“å‰å…ƒç´ ä¸ºæ“ä½œæ•°ï¼Œå‹å…¥æ“ä½œæ•°æ ˆ
 			if (i.type == 0)
 				number.push(stod(i.e));
-			//Èç¹ûµ±Ç°ÔªËØÎªÔËËã·û£¬±È½ÏÆäÓëÔËËã·ûÕ»¶¥ÔªËØµÄÓÅÏÈ¼¶
+			//å¦‚æœå½“å‰å…ƒç´ ä¸ºè¿ç®—ç¬¦ï¼Œæ¯”è¾ƒå…¶ä¸è¿ç®—ç¬¦æ ˆé¡¶å…ƒç´ çš„ä¼˜å…ˆçº§
 			else if (i.type == 1)
 			{
-				/*Èç¹ûĞ¡ÓÚÕ»¶¥ÔËËã·ûÓÅÏÈ¼¶£¬
-				 *²»¶Ï³öÕ»Õ»¶¥ÔËËã·ûÖ±µ½Õ»¶¥ÔËËã·ûÓÅÏÈ¼¶Ğ¡ÓÚµ±Ç°ÔËËã·ûÓÅÏÈ¼¶£¬
-				 *²¢ÒÀ´Î¶Ô³öÕ»µÄÔËËã·û½øĞĞÔËËã
-				 *È»ºóÈëÕ»µ±Ç°ÔËËã·û
+                /*
+                 * å¦‚æœå°äºæ ˆé¡¶è¿ç®—ç¬¦ä¼˜å…ˆçº§ï¼Œ
+                 * ä¸æ–­å‡ºæ ˆæ ˆé¡¶è¿ç®—ç¬¦ç›´åˆ°æ ˆé¡¶è¿ç®—ç¬¦ä¼˜å…ˆçº§å°äºå½“å‰è¿ç®—ç¬¦ä¼˜å…ˆçº§ï¼Œ
+                 * å¹¶ä¾æ¬¡å¯¹å‡ºæ ˆçš„è¿ç®—ç¬¦è¿›è¡Œè¿ç®—
+                 * ç„¶åå…¥æ ˆå½“å‰è¿ç®—ç¬¦
 				 */
 				if (i.out_priority <= op.top().in_priority)
 				{
@@ -334,70 +365,55 @@ void Expression::transToPostfix()
 				}
 				op.push(i);
 			}
-			//Èç¹ûµ±Ç°ÔËËã·ûÎªÀ¨ºÅ
+			//å¦‚æœå½“å‰è¿ç®—ç¬¦ä¸ºæ‹¬å·
 			else if (i.type == 2)
 			{
-				/*Èç¹ûÊÇ±í´ïÊ½µÄµÚÒ»¸öÀ¨ºÅ£¬½«Æä±£´æÖÁlastBracket
-				if (lastBracket.e == "")
-				{
-					op.push(i);
-					lastBracket = i;
-					continue;
-				}*/
-
-				//Èç¹ûµ±Ç°À¨ºÅÎª×óÀ¨ºÅ£¬ÈëÕ»
+				//å¦‚æœå½“å‰æ‹¬å·ä¸ºå·¦æ‹¬å·ï¼Œå…¥æ ˆ
 				if (i.out_priority > 0)
 				{
 					op.push(i);
 					//lastBracket = i;
 				}
-				//Èç¹ûµ±Ç°À¨ºÅÎªÓÒÀ¨ºÅ£¬³öÕ»ÔËËã·ûÕ»Ö±µ½Óöµ½µÚÒ»¸ö×óÀ¨ºÅ
+				//å¦‚æœå½“å‰æ‹¬å·ä¸ºå³æ‹¬å·ï¼Œå‡ºæ ˆè¿ç®—ç¬¦æ ˆç›´åˆ°é‡åˆ°ç¬¬ä¸€ä¸ªå·¦æ‹¬å·
 				else if (i.out_priority < 0)
 				{
-					//Ò»¶ÔÀ¨ºÅÄÚÎŞÄÚÈİ£¬Å×³öÀ¨ºÅÒì³£
-					if (op.top().out_priority>100)
-						throw runtime_error(ExpressionError::NEEDLESS_BARCKET_ERROR);
+//					//ä¸€å¯¹æ‹¬å·å†…æ— å†…å®¹ï¼ŒæŠ›å‡ºæ‹¬å·å¼‚å¸¸
+//					if (op.top().out_priority>100)
+//						throw runtime_error(ExpressionError::NEEDLESS_BARCKET_ERROR);
 
-					do
+                    while (op.top().type != 2)
 					{
 						operation();
-					}while (op.top().type != 2);
+                    }
 
 					op.pop();
 					if (op.empty())
 						throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
-					//²»Í¬ÀàĞÍµÄÀ¨ºÅÆ¥Åä¼ì²â
-					/*else
-					{
-						if (op.top().in_priority != i.out_priority)
-						{
-							throw runtime_error(ExpressionError::ILLEGAL_BRACKET_ERROR);
-						}
-						else
-						{
-							op.pop();
-						}
-					}*/
 				}
 			}
-			//±í´ïÊ½±ßÔµ±êÊ¶·û$Ö±½ÓÑ¹ÈëÔËËã·ûÕ»
+			//è¡¨è¾¾å¼è¾¹ç¼˜æ ‡è¯†ç¬¦$ç›´æ¥å‹å…¥è¿ç®—ç¬¦æ ˆ
 			else if (i.type == 3)
 				op.push(i);
 		}
 
-		//¶ÔÔËËã·ûÕ»Ê£ÓàµÄÔËËã·ûÒÀ´Î³öÕ»²¢½øĞĞÔËËã
+		//å¯¹è¿ç®—ç¬¦æ ˆå‰©ä½™çš„è¿ç®—ç¬¦ä¾æ¬¡å‡ºæ ˆå¹¶è¿›è¡Œè¿ç®—
 		while (op.size() > 1)
 		{
 			operation();
 		}
+
+        if(number.size() > 1)
+        {
+            throw runtime_error(ExpressionError::MISSING_OPERATOR_ERROR);
+        }
 	}
 	catch (...) {
 		throw;
 	}
 }
 
-//µ¥Ä¿ÔËËã·ûÔËËã
-void Expression::calc(metacharacter mc, double & op1)
+//å•ç›®è¿ç®—ç¬¦è¿ç®—
+void Expression::calc(Metacharacter mc, double & op1)
 {
 	if (number.empty())
 		throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
@@ -409,6 +425,8 @@ void Expression::calc(metacharacter mc, double & op1)
 	try {
 		if (mc.e == "!")
 			number.push(mathEx.op_factorial(op1));
+        else if (mc.e == "`")
+            number.push(mathEx.op_degree_to_radian(op1));
 		else if (mc.e == "sin")
 			number.push(mathEx.op_sin(op1));
 		else if (mc.e == "cos")
@@ -434,17 +452,17 @@ void Expression::calc(metacharacter mc, double & op1)
 
 }
 
-//Ë«Ä¿ÔËËã·ûÔËËã
-void Expression::calc(metacharacter mc, double & op1, double & op2)
+//åŒç›®è¿ç®—ç¬¦è¿ç®—
+void Expression::calc(Metacharacter mc, double & op1, double & op2)
 {
-	if (number.empty())
+    if (number.empty()) //æ•°å­—æ ˆä¸ºç©º,ç¼ºå°‘æ“ä½œæ•°2
 		throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
 	else
 	{
 		op2 = number.top();
 		number.pop();
 	}
-	if (number.empty())
+    if (number.empty()) //æ•°å­—æ ˆä¸ºç©º,ç¼ºå°‘æ“ä½œæ•°1
 		throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
 	else
 	{
@@ -474,26 +492,25 @@ void Expression::calc(metacharacter mc, double & op1, double & op2)
 	}
 }
 
+/*
+ * è®¡ç®—
+ */
 string Expression::getResult()
 {
 	try {
-		simpleCheck();
-		split();
-		preprocessing();
-		transToPostfix();
-		/*for (auto &i : exp)
-		{
-			cout << i.e << ' ';
-		}*/
-	} catch (runtime_error &){
-		/*for (auto &i : exp)
-		{
-			cout << i.e << ' ';
-		}*/
+        simpleCheck();  //å­—ç¬¦åˆæ³•æ€§æ£€æŸ¥
+        split();    //æ„å­—æˆè¯
+        preprocessing();    //ç‰¹æ®Šè¿ç®—ç¬¦é¢„å¤„ç†
+        transToPostfix();   //è½¬æ¢ä¸ºé€†æ³¢å…°å¼å¹¶è®¡ç®—
+//        for (auto &i : exp)
+//        {
+//            cout << i.e << ' ';
+//        }
+    } catch (runtime_error &){
 		throw;
 	}
-	result = number.top();
-	return to_string(result);
+    result = number.top();  //æ•°å­—æ ˆä¸­æœ€åä¸€ä¸ªæ•°å³ä¸ºç»“æœ
+    return to_string(mathEx.getRound(result));
 }
 
 
