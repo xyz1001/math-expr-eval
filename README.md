@@ -35,7 +35,7 @@
 `=-1+2`                            //计算负号
 `=-1+2`                            //计算加法
 `=1`                                
-![计算结果](http://2.jpg)
+![计算结果](https://github.com/Zix777/Complex-mathematical-expressions/blob/master/screenshot/sp20161010_214714.png)
 
 #USAGE
 [数学表达式求值算法类的使用](https://github.com/Zix777/Complex-mathematical-expressions/tree/master/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97)
