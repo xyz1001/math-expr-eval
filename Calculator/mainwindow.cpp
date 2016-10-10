@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     //设置表达式输入框
     inputText=new QLineEdit("0");
     inputText->setAlignment(Qt::AlignRight);
-    inputText->setEnabled(false);
+    inputText->setReadOnly(true);
     inputText->setStyleSheet("QLineEdit{height: 50px;"
                              "border-style: plain;"
                              "border-radius: 10px;"
@@ -89,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
                               "font-size: 30px;");
     //设置结果显示框
     resultText = new QLineEdit("0");
-    resultText->setEnabled(false);
+    resultText->setReadOnly(true);
     resultText->setStyleSheet("QLineEdit{height: 50px;"
                              "border-style: plain;"
                              "border-radius: 10px;"

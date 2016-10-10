@@ -21,6 +21,12 @@ namespace ExpressionError
     const string MISSING_OPERAND_ERROR = "缺少操作数";
     //多余的操作数
     const string MISSING_OPERATOR_ERROR = "缺少运算符";
+    //百分号前只能为数字或括号包围的表达式
+    const string PERCENT_OPERATOR_ERROR = "百分号前只能为数字或括号包围的表达式";
+    //角度符号前只能为数字或括号包围的表达式
+    const string DEGREE_OPERATOR_ERROR = "角度符号前只能为数字或括号包围的表达式";
+    //在优先级大于开平方运算符的运算符之后的开平方运算需要用括号包围
+    const string SQUARE_ROOT_ERROR = "开平方运算需要用括号包围";
 	//未知异常
     const string UNKNOWN_ERROR = "未知错误";
 }
@@ -66,7 +72,7 @@ private:
 	//双目运算符运算
     void calc(Metacharacter mc, double &op1, double &op2);
 public:
-    Expression(string str, int precision = 3);
+    Expression(string str, int precision = 5);
 	~Expression();
 	//获取计算结果
 	string getResult();

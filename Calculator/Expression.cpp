@@ -151,7 +151,7 @@ void Expression::negativeOperatorPreprocessing()
 	}
 }
 
-//为默认省略根指数2的开平方运算符前添加上根指数2
+//查找开平方运算并替换为开平方运算符
 void Expression::sqrtOperatorPreprocessing()
 {
     for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
@@ -161,63 +161,21 @@ void Expression::sqrtOperatorPreprocessing()
 			//如果根号在表达式第一个位置
 			if (i == exp.begin())
 			{
-                i = exp.insert(i, METACHARACTERS.at("2"));
+                *i = METACHARACTERS.at("<");
 			}
 			else
 			{
 				--i;
-				//如果根号前为左括号，直接添加根指数2
-				if ((*i).out_priority >= 100)
-				{
-					++i;
-                    i = exp.insert(i, METACHARACTERS.at("2"));
-					++i;
+                //如果根号前为左括号,前置运算符或中置运算符,为开平方
+                if ((*i).out_priority >= 100 || (*i).position == 1 || (*i).position == 2)
+                {
+                    if(i->type == 1 && i->in_priority >= METACHARACTERS.at("<").in_priority)
+                        throw runtime_error(ExpressionError::SQUARE_ROOT_ERROR);
+                    ++i;
+                    *i = METACHARACTERS.at("<");
 				}
-				//如果根号前为为前置运算符或中置运算符，说明根号为开平方运算，为其添加根指数2并添加括号
-				else if ((*i).position == 1 || (*i).position == 2)
-				{
-					//在根号前添加“（2”
-					++i;
-                    i = exp.insert(i, { METACHARACTERS.at("("),METACHARACTERS.at("2") }); //(2#4
-					++i, ++i, ++i;
-					//如果根号后为数字，直接在数字后添加“)”
-					if ((*i).type == 0)
-					{
-						++i;
-                        i = exp.insert(i, METACHARACTERS.at(")"));
-					}
-					//如果根号后为左括号，查找对应的右括号并在其后添加“)”
-					else if ((*i).type == 2)
-					{
-						int bracketCnt = 1;
-						for (auto j = ++i; j != exp.end(); ++j)
-						{
-							if ((*j).out_priority > 100)
-								++bracketCnt;
-							else if ((*j).in_priority > 100)
-								--bracketCnt;
-
-							if (bracketCnt == 0)
-							{
-								++j;
-                                exp.insert(j, METACHARACTERS.at(")"));
-								break;
-							}
-						}
-						--i;
-						//如果根号后左右括号数量不等，抛出括号异常
-						if (bracketCnt != 0)
-							throw runtime_error(ExpressionError::ILLEGAL_BRACKET_ERROR);
-					}
-					//如果根号后为运算符或右括号，抛出操作数异常
-					else if ((*i).type == 1 || (*i).out_priority > 100)
-						throw runtime_error(ExpressionError::MISSING_OPERAND_ERROR);
-					//其他异常
-					else
-						throw runtime_error(ExpressionError::UNKNOWN_ERROR);
-				}
-				else
-					++i;
+                else
+                    ++i;
 			}
 		}
 	}
@@ -231,29 +189,19 @@ void Expression::percentOperatorPreprocessing()
 		if ((*i).e == "%")
 		{
 			++i;
-            //如果%后为表达式尾,中置或后置运算符,则%为百分号运算,为避免二义性,将其转换为除以100操作并加上括号
+            /*
+             * 如果%后为表达式尾,中置或后置运算符,则%为百分号运算,为避免二义性,将其替换为百分号运算
+             */
 			if (i == exp.end() || (*i).position == 2 || (*i).position == 3)
 			{
-                i = exp.insert(i, METACHARACTERS.at(")"));  //加上右括号
-                i = exp.insert(i, Metacharacter{ 0,0,0,0,0, "100" });   //加上除数100
-				--i;
-                (*i).e = "/";   //由于%和/除名称以外其余属性一致,直接将%修改为/
-                int interval = 0;   //记录先前移动间隔
                 /*
-                 * 找到%前第一个为前置,中置运算符或表达式首的位置
+                 * 百分号前只能为数字或括号包围的表达式
                  */
-                while((--i)->position != 1 && i->position !=2 && i != exp.begin())
-                {
-                    ++interval;
-                }
-                //在找到的位置之后插入左括号
+                --i;--i;
+                if(i->type!=0 && i->in_priority<=100)
+                    throw runtime_error(ExpressionError::PERCENT_OPERATOR_ERROR);
                 ++i;
-                i = exp.insert(i, METACHARACTERS.at("("));
-                while (interval--)  //返回原位置
-                {
-                    ++i;
-                }
-                ++i;
+                *i = METACHARACTERS.at(">");
 			}
 		}
     }
@@ -264,24 +212,17 @@ void Expression::percentOperatorPreprocessing()
  */
 void Expression::degreeOperatorPreprocessing()
 {
-    //与对百分号处理类似,只是无需对后一个操作词进行判断,°无二义性,只需直接加括号即可
+    //与对百分号处理类似,只是无需对后一个操作词进行判断,°无二义性
     for (list<Metacharacter>::iterator i = exp.begin(); i != exp.end(); ++i)
     {
         if ((*i).e == "`")
         {
-            ++i;
-            i = exp.insert(i, METACHARACTERS.at(")"));
-            int interval = 0;
-            while((--i)->position != 1 && i->position !=2 && i != exp.begin())
-            {
-                ++interval;
-            }
-            ++i;
-            i = exp.insert(i, METACHARACTERS.at("("));
-            while (interval--)
-            {
-                ++i;
-            }
+            /*
+             * 角度前只能为数字或括号包围的表达式
+             */
+            --i;
+            if(i->type!=0 && i->in_priority<=100)
+                throw runtime_error(ExpressionError::DEGREE_OPERATOR_ERROR);
             ++i;
         }
     }
@@ -427,6 +368,10 @@ void Expression::calc(Metacharacter mc, double & op1)
 			number.push(mathEx.op_factorial(op1));
         else if (mc.e == "`")
             number.push(mathEx.op_degree_to_radian(op1));
+        else if (mc.e == ">")
+            number.push(mathEx.op_percent(op1));
+        else if (mc.e == "<")
+            number.push(mathEx.op_square_root(op1));
 		else if (mc.e == "sin")
 			number.push(mathEx.op_sin(op1));
 		else if (mc.e == "cos")

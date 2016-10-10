@@ -68,22 +68,20 @@ double MathEx::op_pow(const double &op1, const double &op2) const
     return pow(op1, op2);
 }
 
+double MathEx::op_square_root(const double &op) const
+{
+    //被开方数为负
+    if (op < 0)
+        throw runtime_error(MathExError::RADICAND_ERROR);
+    return sqrt(op);
+}
+
 double MathEx::op_extract_root(const double &op1, const double &op2) const
 {
-	if (op1 == 2.0)
-	{
-        //被开方数小于0
-		if (op2 < 0)
-			throw runtime_error(MathExError::EXTRACT_ROOT_ERROR);
-        return sqrt(op2);
-	}
-	else
-	{
-        //被开方数为负
-        if (op2 < 0)
-            throw runtime_error(MathExError::RADICAND_ERROR);
-        return pow(op2, 1 / op1);
-	}
+    //被开方数为负
+    if (op2 < 0)
+        throw runtime_error(MathExError::RADICAND_ERROR);
+    return pow(op2, 1 / op1);
 }
 
 double MathEx::op_factorial(const double &op) const
@@ -98,10 +96,14 @@ double MathEx::op_factorial(const double &op) const
     return sum;
 }
 
+double MathEx::op_percent(const double &op) const
+{
+    return op/100;
+}
+
 double MathEx::op_degree_to_radian(const double &op) const
 {
-    double rad = op * PI / 180;
-    return rad;
+    return op * PI / 180;
 }
 
 double MathEx::op_sin(const double &op) const

@@ -1,8 +1,8 @@
 //!!! Qt5
 //! Proram:
-//!     A calculator
+//!     一个计算器
 //! History:
-//!     05/07/2015 v0.1.0,:Finish the simple Layout
+//!     05/07/2015 v0.1.0:完成基本布局
 //!     05/08/2015 v0.2.0:Realize the buttons' function except calculation button
 //!     09/24/2015 v0.3.0:Realize the main function of the rest of button,can only calculate equation with +,-,*,/ without ();
 //!     09/25/2015 v0.3.1:Fixed some bugs:

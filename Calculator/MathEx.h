@@ -56,10 +56,14 @@ public:
 	double op_mod(const double &op1, const double &op2) const;
 	//乘方运算
 	double op_pow(const double &op1, const double &op2) const;
+    //开平方运算
+    double op_square_root(const double &op) const;
 	//开方运算
 	double op_extract_root(const double &op1, const double &op2) const;
 	//阶乘运算
 	double op_factorial(const double &op) const;
+    //阶乘运算
+    double op_percent(const double &op) const;
     //角度转弧度
     double op_degree_to_radian(const double &op) const;
 	//正弦运算，op为弧度

@@ -79,9 +79,9 @@ const map<string, Metacharacter> METACHARACTERS{
 
     { "%",		Metacharacter{ 1,2,2,2,2, "%" }},   //求余或百分号
     { "^",		Metacharacter{ 1,3,3,2,2, "^" }},   //乘方
-    { "#",		Metacharacter{ 1,3,3,2,2, "#" }},   //开方
+    { "#",		Metacharacter{ 1,3,3,2,2, "#" }},   //开多次方
+    { "<",		Metacharacter{ 1,4,4,1,1, "<" }},   //开平方
     { "!",		Metacharacter{ 1,4,4,1,3, "!" }},   //阶层
-    { "`",		Metacharacter{ 1,4,4,1,3, "`" }},   //度(角度)
 
     { "sin",	Metacharacter{ 1,11,11,1,1, "sin" }},   //正弦（默认弧度）
     { "cos",	Metacharacter{ 1,11,11,1,1, "cos" }},   //余弦
@@ -92,6 +92,9 @@ const map<string, Metacharacter> METACHARACTERS{
     { "lg",		Metacharacter{ 1,11,11,1,1, "lg" }},    //常用对数，以10为底
     { "log",	Metacharacter{ 1,11,11,1,1, "log" }},   //常用对数，以10为底
     { "ln",		Metacharacter{ 1,11,11,1,1, "ln" }},    //自然对数，以e为底
+
+    { "`",		Metacharacter{ 1,20,20,1,3, "`" }},   //度(角度)
+    { ">",		Metacharacter{ 1,20,20,1,3, ">" }},   //百分号
 
     /*
      * 括号，程序未区分括号形式和优先级，即5*(3+1}是合法的
