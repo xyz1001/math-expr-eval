@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Expression.h"
+#include "Expression.h"	//导入Expression头文件
 
 using namespace std;
 
@@ -9,12 +9,12 @@ int main()
 	{
 		string str;
 		cin >> str;
-		Expression e(str);
+		Expression e(str, 5);	//传入输入的表达式,小数点保留5位
 		try
 		{
-			cout << e.getResult() << endl;
+			cout << e.getResult() << endl;	//读取计算结果
 		}
-		catch (runtime_error err)
+		catch (runtime_error err)	//捕获异常
 		{
 			cerr << err.what() << endl;
 		}

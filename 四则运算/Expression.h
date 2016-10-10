@@ -10,65 +10,72 @@
 
 using namespace std;
 
-//�쳣�����ռ�
+//异常命名空间
 namespace ExpressionError
 {
-	//�Ƿ��ַ�
-	const string ILLEGAL_CHARACTER_ERROR = "�Ƿ��ַ�: ";
-	//���Ų�ƥ��
-	const string ILLEGAL_BRACKET_ERROR = "���Ų�ƥ��";
-	//ȱʧ������
-	const string MISSING_OPERAND_ERROR = "ȱ�ٲ�����";
-	//����Ĳ�����
-	const string MISSING_OPERATOR_ERROR = "ȱ�������";
-	//δ֪�쳣
-	const string UNKNOWN_ERROR = "δ֪����";
+	//非法字符
+	const string ILLEGAL_CHARACTER_ERROR = "非法字符: ";
+	//括号不匹配
+	const string ILLEGAL_BRACKET_ERROR = "括号不匹配";
+	//缺失操作数
+	const string MISSING_OPERAND_ERROR = "缺少操作数";
+	//多余的操作数
+	const string MISSING_OPERATOR_ERROR = "缺少运算符";
+	//百分号前只能为数字或括号包围的表达式
+	const string PERCENT_OPERATOR_ERROR = "百分号前只能为数字或括号包围的表达式";
+	//角度符号前只能为数字或括号包围的表达式
+	const string DEGREE_OPERATOR_ERROR = "角度符号前只能为数字或括号包围的表达式";
+	//在优先级大于开平方运算符的运算符之后的开平方运算需要用括号包围
+	const string SQUARE_ROOT_ERROR = "开平方运算需要用括号包围";
+	//未知异常
+	const string UNKNOWN_ERROR = "未知错误";
 }
 
 class Expression
 {
 private:
-	//��ѧ����
+	//数学计算
 	MathEx mathEx;
-	//ԭʼ�ַ���
+	//原始字符串
 	string raw_exp;
-	//��ֺ�ı���ʽԪ���б�
+	//拆分后的表达式元素列表
 	list<Metacharacter> exp;
-	//������ջ
+	//操作符栈
 	stack<Metacharacter> op;
-	//����ջ
+	//数字栈
 	stack<double> number;
-	//����ʽ��ֵ
+	//表达式的值
 	double result = 0;
 
-	//�Ա���ʽ�����ַ��Ϸ��Եĳ������
+	//对表达式进行字符合法性的初步检测
 	bool simpleCheck();
-	//��ֱ���ʽ
+	//拆分表达式
 	bool split();
-	//���ż�⼰����
+	//负号检测及处理
 	void negativeOperatorPreprocessing();
-	//�������ż�⼰����
+	//开方负号检测及处理
 	void sqrtOperatorPreprocessing();
-	//�ٷֺ�/������ż�⼰����
+	//百分号/求余符号检测及处理
 	void percentOperatorPreprocessing();
-	//�ȷ��ż�⼰����
+	//度符号检测及处理
 	void degreeOperatorPreprocessing();
-	//��ͬ���ż�⼰����
+	//不同括号检测及处理
 	void bracketPreprocessing();
-	//�����������⼰����
+	//特殊运算符检测及处理
 	void preprocessing();
-	//��ջ���������
+	//出栈运算符运算
 	void operation();
-	//ת���ɺ�׺����ʽ����ת������ֵ
+	//转换成后缀表达式，边转换边求值
 	void transToPostfix();
-	//��Ŀ���������
+	//单目运算符运算
 	void calc(Metacharacter mc, double &op1);
-	//˫Ŀ���������
+	//双目运算符运算
 	void calc(Metacharacter mc, double &op1, double &op2);
 public:
-	Expression(string str, int precision = 3);
+	//str: 算术表达式 precision: 保留的小数点位数
+	Expression(string str, int precision = 5);
 	~Expression();
-	//��ȡ������
+	//获取计算结果
 	string getResult();
 };
 

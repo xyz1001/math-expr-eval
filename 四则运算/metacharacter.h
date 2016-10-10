@@ -4,19 +4,19 @@
 #include <map>
 
 struct Metacharacter {
-	//0ÎªÊı×Ö£¨°üÀ¨Ğ¡Êıµã£©£¬1ÎªÔËËã·û£¬2ÎªÀ¨ºÅ
+	//0ä¸ºæ•°å­—ï¼ˆåŒ…æ‹¬å°æ•°ç‚¹ï¼‰ï¼Œ1ä¸ºè¿ç®—ç¬¦ï¼Œ2ä¸ºæ‹¬å·
 	int type;
-	//Õ»ÍâÓÅÏÈ¼¶£¬Êı×ÖÎª0
+	//æ ˆå¤–ä¼˜å…ˆçº§ï¼Œæ•°å­—ä¸º0
 	int out_priority;
-	//Õ»ÄÚÓÅÏÈ¼¶£¬Êı×ÖÎª0
+	//æ ˆå†…ä¼˜å…ˆçº§ï¼Œæ•°å­—ä¸º0
 	int in_priority;
-	//²Ù×÷Êı¸öÊı£¬Êı×ÖºÍÀ¨ºÅÎª0
+	//æ“ä½œæ•°ä¸ªæ•°ï¼Œæ•°å­—å’Œæ‹¬å·ä¸º0
 	int operand;
-	/*ÔËËã·ûÎ»ÖÃ£¬Êı×ÖºÍÀ¨ºÅÎª0
-	*ÔËËã·ûÔÚ²Ù×÷ÊıÖ®Ç°£¬Ö®¼äºÍÖ®ºó·Ö±ğÎª1,2ºÍ3±íÊ¾
+	/*è¿ç®—ç¬¦ä½ç½®ï¼Œæ•°å­—å’Œæ‹¬å·ä¸º0
+	*è¿ç®—ç¬¦åœ¨æ“ä½œæ•°ä¹‹å‰ï¼Œä¹‹é—´å’Œä¹‹ååˆ†åˆ«ä¸º1,2å’Œ3è¡¨ç¤º
 	*/
 	int position;
-	//ÔËËã·ûÔªËØ
+	//è¿ç®—ç¬¦å…ƒç´ 
 	string e;
 };
 
@@ -33,13 +33,13 @@ const string NINE = "9";
 const string POINT = ".";
 const string ADD = "+";
 const string MINUS = "-";
-const string MULTIPLY = "¡Á";
-const string DIVIDE = "¡Â";
+const string MULTIPLY = "Ã—";
+const string DIVIDE = "Ã·";
 const string EQUAL = "=";
-const string DEGREE = "¡ã";
+const string DEGREE = "Â°";
 const string MOD_PERCENT = "%";
 const string POW = "^";
-const string EXTRACT_ROOT = "¡Ì";
+const string EXTRACT_ROOT = "âˆš";
 const string FACTORIAL = "!";
 const string SIN = "sin";
 const string COS = "cos";
@@ -55,7 +55,7 @@ const string RIGHT_BRACKET = ")";
 
 const map<string, Metacharacter> METACHARACTERS{
 	/*
-	* Êı×Ö0-9ºÍĞ¡Êıµã
+	* æ•°å­—0-9å’Œå°æ•°ç‚¹
 	*/
 	{ "0",		Metacharacter{ 0,0,0,0,0, "0" } },
 	{ "1",		Metacharacter{ 0,0,0,0,0, "1" } },
@@ -70,32 +70,35 @@ const map<string, Metacharacter> METACHARACTERS{
 	{ ".",		Metacharacter{ 0,0,0,0,0, "." } },
 
 	/*
-	* ¼Ó¼õ³Ë³ı
+	* åŠ å‡ä¹˜é™¤
 	*/
 	{ "+",		Metacharacter{ 1,1,1,2,2, "+" } },
 	{ "-",		Metacharacter{ 1,1,1,2,2, "-" } },
 	{ "*",		Metacharacter{ 1,2,2,2,2, "*" } },
 	{ "/",		Metacharacter{ 1,2,2,2,2, "/" } },
 
-	{ "%",		Metacharacter{ 1,2,2,2,2, "%" } },   //ÇóÓà»ò°Ù·ÖºÅ
-	{ "^",		Metacharacter{ 1,3,3,2,2, "^" } },   //³Ë·½
-	{ "#",		Metacharacter{ 1,3,3,2,2, "#" } },   //¿ª·½
-	{ "!",		Metacharacter{ 1,4,4,1,3, "!" } },   //½×²ã
-	{ "`",		Metacharacter{ 1,4,4,1,3, "`" } },   //¶È(½Ç¶È)
+	{ "%",		Metacharacter{ 1,2,2,2,2, "%" } },   //æ±‚ä½™æˆ–ç™¾åˆ†å·
+	{ "^",		Metacharacter{ 1,3,3,2,2, "^" } },   //ä¹˜æ–¹
+	{ "#",		Metacharacter{ 1,3,3,2,2, "#" } },   //å¼€å¤šæ¬¡æ–¹
+	{ "<",		Metacharacter{ 1,4,4,1,1, "<" } },   //å¼€å¹³æ–¹
+	{ "!",		Metacharacter{ 1,4,4,1,3, "!" } },   //é˜¶å±‚
 
-	{ "sin",	Metacharacter{ 1,11,11,1,1, "sin" } },   //ÕıÏÒ£¨Ä¬ÈÏ»¡¶È£©
-	{ "cos",	Metacharacter{ 1,11,11,1,1, "cos" } },   //ÓàÏÒ
-	{ "tan",	Metacharacter{ 1,11,11,1,1, "tan" } },   //ÕıÇĞ
-	{ "arcsin",	Metacharacter{ 1,11,11,1,1, "arcsin" } },    //·´ÕıÏÒ
-	{ "arccos",	Metacharacter{ 1,11,11,1,1, "arccos" } },    //·´ÓàÏÒ
-	{ "arctan",	Metacharacter{ 1,11,11,1,1, "arctan" } },    //·´ÕıÇĞ
-	{ "lg",		Metacharacter{ 1,11,11,1,1, "lg" } },    //³£ÓÃ¶ÔÊı£¬ÒÔ10Îªµ×
-	{ "log",	Metacharacter{ 1,11,11,1,1, "log" } },   //³£ÓÃ¶ÔÊı£¬ÒÔ10Îªµ×
-	{ "ln",		Metacharacter{ 1,11,11,1,1, "ln" } },    //×ÔÈ»¶ÔÊı£¬ÒÔeÎªµ×
+	{ "sin",	Metacharacter{ 1,11,11,1,1, "sin" } },   //æ­£å¼¦ï¼ˆé»˜è®¤å¼§åº¦ï¼‰
+	{ "cos",	Metacharacter{ 1,11,11,1,1, "cos" } },   //ä½™å¼¦
+	{ "tan",	Metacharacter{ 1,11,11,1,1, "tan" } },   //æ­£åˆ‡
+	{ "arcsin",	Metacharacter{ 1,11,11,1,1, "arcsin" } },    //åæ­£å¼¦
+	{ "arccos",	Metacharacter{ 1,11,11,1,1, "arccos" } },    //åä½™å¼¦
+	{ "arctan",	Metacharacter{ 1,11,11,1,1, "arctan" } },    //åæ­£åˆ‡
+	{ "lg",		Metacharacter{ 1,11,11,1,1, "lg" } },    //å¸¸ç”¨å¯¹æ•°ï¼Œä»¥10ä¸ºåº•
+	{ "log",	Metacharacter{ 1,11,11,1,1, "log" } },   //å¸¸ç”¨å¯¹æ•°ï¼Œä»¥10ä¸ºåº•
+	{ "ln",		Metacharacter{ 1,11,11,1,1, "ln" } },    //è‡ªç„¶å¯¹æ•°ï¼Œä»¥eä¸ºåº•
 
-														 /*
-														 * À¨ºÅ£¬³ÌĞòÎ´Çø·ÖÀ¨ºÅĞÎÊ½ºÍÓÅÏÈ¼¶£¬¼´5*(3+1}ÊÇºÏ·¨µÄ
-														 */
+	{ "`",		Metacharacter{ 1,20,20,1,3, "`" } },   //åº¦(è§’åº¦)
+	{ ">",		Metacharacter{ 1,20,20,1,3, ">" } },   //ç™¾åˆ†å·
+
+													   /*
+													   * æ‹¬å·ï¼Œç¨‹åºæœªåŒºåˆ†æ‹¬å·å½¢å¼å’Œä¼˜å…ˆçº§ï¼Œå³5*(3+1}æ˜¯åˆæ³•çš„
+													   */
 	{ "(",		Metacharacter{ 2,103,-1,0,0, "(" } },
 	{ "[",		Metacharacter{ 2,102,-1,0,0, "[" } },
 	{ "{",		Metacharacter{ 2,101,-1,0,0, "{" } },
@@ -103,7 +106,7 @@ const map<string, Metacharacter> METACHARACTERS{
 	{ "]",		Metacharacter{ 2,-1,102,0,0, "]" } },
 	{ "}",		Metacharacter{ 2,-1,101,0,0, "}" } },
 
-	{ "$",		Metacharacter{ 3,-10,-10,0,0, "$" } },   //½áÊø·ûºÅ
+	{ "$",		Metacharacter{ 3,-10,-10,0,0, "$" } },   //ç»“æŸç¬¦å·
 };
 #endif // METACHARACTER
 
