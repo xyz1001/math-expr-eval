@@ -17,6 +17,7 @@
  2. 通过IDE编译运行即可
 
 输入合法的数学表达式即可输出表达式的计算结果
+
 ![示例界面](https://github.com/Zix777/Complex-mathematical-expressions/blob/master/screenshot/sp20161010_214714.png)
 
 ##说明
@@ -25,6 +26,7 @@
 - `Expression`类为表达式解析类, `MathEx`类定义了各运算符的运算规则, `metacharacter`头文件中定义了常见运算符的属性
 
 - 数学表达式中所使用的符号必须与`metacharacter`头文件中`METACHARACTERS`表规定的一致,调用表达式计算类时一定要先将运算符转换为代码中对应的字符,具体对应如下
+
 标准运算符|代码符号|含义
 ---------------|-----------|------
 `+`|`+`|加法
