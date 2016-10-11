@@ -46,3 +46,6 @@
 [数学表达式求值算法类的使用](https://github.com/Zix777/Complex-mathematical-expressions/tree/master/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97)
 
 [计算器的介绍和使用](https://github.com/Zix777/Complex-mathematical-expressions/tree/master/Calculator)
+
+##License
+under GPLv3
