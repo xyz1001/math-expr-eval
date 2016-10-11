@@ -72,6 +72,7 @@ private:
 	//双目运算符运算
     void calc(Metacharacter mc, double &op1, double &op2);
 public:
+    //str: 算术表达式 precision: 保留的小数点位数
     Expression(string str, int precision = 5);
 	~Expression();
 	//获取计算结果
