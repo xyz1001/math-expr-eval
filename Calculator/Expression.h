@@ -1,3 +1,34 @@
+/******************************************************************************
+ * Expression.h - 表达式解析类
+ *
+ * Copyright (c) 20015-2016  Zix
+ *
+ * DESCRIPTION: -
+ *   通过对传入的数学表达式进行解析并通过转换为逆波兰式进行求值
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/5/13
+ * modification history:
+ *    1.基本支持表达式的计算
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/10/09
+ * modification history:
+ *    1.新增对角度符号的支持
+ *    2.提取运算符定义至新头文件metacharacter.h中
+ *    3.根据小数位设置对结果进行处理
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/10/10
+ * modification history:
+ *    1.优化对具有二义性符号(百分号,开方)的处理
+ *    2.提取符号定义至新头文件metacharacter.h中
+ *
+ *
+ ******************************************************************************/
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 

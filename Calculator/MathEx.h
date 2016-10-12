@@ -1,3 +1,31 @@
+/******************************************************************************
+ * MathEx.h - 数学计算类
+ *
+ * Copyright (c) 20015-2016  Zix
+ *
+ * DESCRIPTION: -
+ *   对cmath类的进一步封装及添加,实现对错误的捕获
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/5/13
+ * modification history:
+ *    1.支持常见运算符的运算
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/10/09
+ * modification history:
+ *    1.新增对角度符号的运算,将其转换为弧度
+ *    2.新增对结果进行保留设定小数位的函数getRound();
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/10/10
+ * modification history:
+ *    1.新增百分号运算和开平方运算
+ *
+ ******************************************************************************/
 #ifndef MATHEX_H
 #define MATHEX_H
 

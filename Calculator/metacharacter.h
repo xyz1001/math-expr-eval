@@ -1,3 +1,27 @@
+/******************************************************************************
+ * metacharacter.h - 运算符定义类
+ *
+ * Copyright (c) 20015-2016  Zix
+ *
+ * DESCRIPTION: -
+ *   包含对运算符属性的相关定义
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/10/09
+ * modification history:
+ *    1.新增对运算符在图形界面显示的字符的常量定义,便于后期使用
+ *    2.修改部分运算符的优先级
+ *    3.添加角度符号相关定义
+ *
+ * Copyright：Zix
+ * Author：Zix
+ * Date：2016/10/10
+ * modification history:
+ *    1.添加独立的百分号和开平方符号定义
+ *    2.修改部分符号的优先级
+ *
+ ******************************************************************************/
 #ifndef METACHARACTER
 #define METACHARACTER
 #include <string>
@@ -20,39 +44,9 @@ struct Metacharacter {
     string e;
 };
 
-const string ZERO = "0";
-const string ONE = "1";
-const string TWO = "2";
-const string THREE = "3";
-const string FOUR = "4";
-const string FIVE = "5";
-const string SIX = "6";
-const string SEVEN = "7";
-const string EIGHT = "8";
-const string NINE = "9";
-const string POINT = ".";
-const string ADD = "+";
-const string MINUS = "-";
-const string MULTIPLY = "×";
-const string DIVIDE = "÷";
-const string EQUAL = "=";
-const string DEGREE = "°";
-const string MOD_PERCENT = "%";
-const string POW = "^";
-const string EXTRACT_ROOT = "√";
-const string FACTORIAL = "!";
-const string SIN = "sin";
-const string COS = "cos";
-const string TAN = "tan";
-const string ARCSIN = "arcsin";
-const string ARCCOS = "arccos";
-const string ARCTAN = "arctan";
-const string LG = "lg";
-const string LOG = "log";
-const string LN = "ln";
-const string LEFT_BRACKET = "(";
-const string RIGHT_BRACKET = ")";
-
+/*
+ * 各符号的属性表
+ */
 const map<string, Metacharacter> METACHARACTERS{
     /*
      * 数字0-9和小数点
@@ -108,5 +102,42 @@ const map<string, Metacharacter> METACHARACTERS{
 
     { "$",		Metacharacter{ 3,-10,-10,0,0, "$" }},   //结束符号
 };
+
+/*
+ * 用于在图形化界面显示的字符
+ */
+const string ZERO = "0";
+const string ONE = "1";
+const string TWO = "2";
+const string THREE = "3";
+const string FOUR = "4";
+const string FIVE = "5";
+const string SIX = "6";
+const string SEVEN = "7";
+const string EIGHT = "8";
+const string NINE = "9";
+const string POINT = ".";
+const string ADD = "+";
+const string MINUS = "-";
+const string MULTIPLY = "×";
+const string DIVIDE = "÷";
+const string EQUAL = "=";
+const string DEGREE = "°";
+const string MOD_PERCENT = "%";
+const string POW = "^";
+const string EXTRACT_ROOT = "√";
+const string FACTORIAL = "!";
+const string SIN = "sin";
+const string COS = "cos";
+const string TAN = "tan";
+const string ARCSIN = "arcsin";
+const string ARCCOS = "arccos";
+const string ARCTAN = "arctan";
+const string LG = "lg";
+const string LOG = "log";
+const string LN = "ln";
+const string LEFT_BRACKET = "(";
+const string RIGHT_BRACKET = ")";
+
 #endif // METACHARACTER
 
