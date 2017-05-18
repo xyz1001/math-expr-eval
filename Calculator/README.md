@@ -15,7 +15,7 @@ $ sudo make install
 ```
 
 ## 运行界面
-![](https://github.com/Zix777/math-expr-eval/blob/master/screenshot/sp20161010_212107.png)![](https://github.com/Zix777/math-expr-eval/blob/master/screenshot/sp20161010_214051.png)
+![](https://github.com/xyz1001/math-expr-eval/blob/master/screenshot/sp20161010_212107.png)![](https://github.com/xyz1001/math-expr-eval/blob/master/screenshot/sp20161010_214051.png)
 
 ## 使用说明
 - `↑`键用于切换`sin` `cos` `tan` `lg`为`arcsin` `arccos` `arctan` `ln`
