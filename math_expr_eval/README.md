@@ -1,24 +1,24 @@
-# 数学表达式算法库
+# 数学表达式求值
 ## 下载和使用
-1. `git clone git@github.com:Zix777/Complex-mathematical-expressions.git`
+1. `git clone git@github.com:Zix777/math-expr-eval.git`
 2. 复制expression文件夹下除`main.cpp`文件外其他文件至你的代码目录并将其添加至工程中
 3. 定义Expression对象并通过`string getResult()`函数获取计算结果,参考`main.cpp`内容
 
 ## 运行示例
 - linux
- 1. `git clone git@github.com:Zix777/Complex-mathematical-expressions.git`
- 2. `cd Complex-mathematical-expressions/MathExpressionCalculator/`
+ 1. `git clone git@github.com:Zix777/math-expr-eval.git`
+ 2. `cd math-expr-eval/math-expr-eval/`
  3. `make`
  4. `chmod u+x main`
  5. `./main`
 
 - windows
- 1. `git clone git@github.com:Zix777/Complex-mathematical-expressions.git`
+ 1. `git clone git@github.com:Zix777/math-expr-eval.git`
  2. 通过IDE编译运行即可
 
 输入合法的数学表达式即可输出表达式的计算结果
 
-![示例界面](https://github.com/Zix777/Complex-mathematical-expressions/blob/master/screenshot/sp20161010_214714.png)
+![示例界面](https://github.com/Zix777/math-expr-eval/blob/master/screenshot/sp20161010_214714.png)
 
 ## 说明
 - 实现算法为将表达式转换为逆波兰式(后缀表达式)计算
