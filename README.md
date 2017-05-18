@@ -40,6 +40,7 @@
 `=-1+2`|计算负号
 `=-1+2`|计算加法
 `=1`|                              
+
 ![计算结果](https://github.com/Zix777/Complex-mathematical-expressions/raw/master/screenshot/sp20161010_214714.png)
 
 # USAGE

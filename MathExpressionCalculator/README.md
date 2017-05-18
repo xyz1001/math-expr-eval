@@ -1,10 +1,10 @@
-#数学表达式算法库
-##下载和使用
+# 数学表达式算法库
+## 下载和使用
 1. `git clone git@github.com:Zix777/Complex-mathematical-expressions.git`
 2. 复制expression文件夹下除`main.cpp`文件外其他文件至你的代码目录并将其添加至工程中
 3. 定义Expression对象并通过`string getResult()`函数获取计算结果,参考`main.cpp`内容
 
-##运行示例
+## 运行示例
 - linux
  1. `git clone git@github.com:Zix777/Complex-mathematical-expressions.git`
  2. `cd Complex-mathematical-expressions/MathExpressionCalculator/`
@@ -20,7 +20,7 @@
 
 ![示例界面](https://github.com/Zix777/Complex-mathematical-expressions/blob/master/screenshot/sp20161010_214714.png)
 
-##说明
+## 说明
 - 实现算法为将表达式转换为逆波兰式(后缀表达式)计算
 
 - `Expression`类为表达式解析类, `MathEx`类定义了各运算符的运算规则, `metacharacter`头文件中定义了常见运算符的属性
@@ -55,11 +55,11 @@
 
 - `Expression`类默认保留5位小数,可通过构造函数第二个参数进行设置
 
-##注意
+## 注意
 1. 不支持负数的开方,即使是根指数为奇数的分数.
 2. 定义了常见的表达式错误及运算错误,注意捕获异常
 
-##TODO
+## TODO
 1. 对高精度运算的支持
 2. 对大数运算的支持
 3. 小数点位数的动态确定
